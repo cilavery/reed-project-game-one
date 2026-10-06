@@ -1,0 +1,160 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #d8d4cc;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  user-select: none;
+}
+
+canvas { display: block; }
+
+.hidden { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+
+#crosshair {
+  position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 4px; margin: -2px 0 0 -2px;
+  border-radius: 50%; background: rgba(255, 255, 255, 0.45);
+}
+
+#prompt {
+  position: absolute; left: 50%; top: 58%;
+  transform: translateX(-50%);
+  font-size: 15px; letter-spacing: 2px; text-transform: uppercase;
+  color: #eee; text-shadow: 0 0 6px #000;
+}
+
+#message {
+  position: absolute; left: 50%; top: 22%;
+  transform: translateX(-50%);
+  font-size: 17px; letter-spacing: 3px; text-transform: uppercase;
+  color: #e9e2d0; text-shadow: 0 0 10px #000;
+  opacity: 0; transition: opacity 0.6s;
+  text-align: center; white-space: nowrap;
+}
+#message.show { opacity: 1; }
+
+#objective {
+  position: absolute; top: 24px; right: 30px; text-align: right;
+  font-size: 13px; letter-spacing: 4px; color: #c8b98c;
+  text-shadow: 0 0 6px #000;
+}
+#objective .sub { display: block; margin-top: 6px; font-size: 10px; letter-spacing: 3px; color: #7d766a; }
+
+#inventory { position: absolute; right: 30px; bottom: 28px; text-align: right; }
+#inventory .row { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 8px; font-size: 13px; color: #d8d4cc; }
+#inventory .label { font-size: 11px; letter-spacing: 3px; color: #9a958a; }
+#inventory .status { font-size: 10px; letter-spacing: 2px; color: #7d766a; min-width: 110px; text-align: left; }
+#inventory .flares { color: #e0503a; letter-spacing: 3px; }
+.state { letter-spacing: 3px; font-size: 12px; }
+.state.w0 { color: #8fbf8f; }
+.state.w1 { color: #e0a040; }
+.state.w2 { color: #e03a2a; animation: pulse 0.9s infinite; }
+@keyframes pulse { 50% { opacity: 0.4; } }
+
+#blood {
+  position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(90,0,0,0.55) 80%, rgba(60,0,0,0.9) 100%);
+  transition: opacity 0.4s;
+}
+
+#stats { position: absolute; left: 30px; bottom: 28px; }
+#stats .row { display: flex; align-items: center; margin-top: 8px; }
+#stats .label { width: 74px; font-size: 11px; letter-spacing: 3px; color: #9a958a; }
+
+.meter {
+  width: 200px; height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.meter.wide { width: 100%; margin-top: 10px; }
+.meter .fill { height: 100%; width: 0%; background: #6c9; transition: width 0.06s linear; }
+.meter .fill.stamina { background: #bbb39c; }
+.meter .fill.mic { background: #7ab0d8; }
+#noiseMeter { height: 10px; }
+
+#debug {
+  position: absolute; top: 10px; left: 10px;
+  font: 12px monospace; color: #8f8; white-space: pre;
+}
+
+#flash {
+  position: fixed; inset: 0; pointer-events: none; z-index: 5;
+  background: #600; opacity: 0;
+}
+
+/* ---------- Screens ---------- */
+.screen {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(10, 10, 12, 0.55), rgba(0, 0, 0, 0.92));
+  cursor: pointer;
+  z-index: 10;
+}
+#menu { background: radial-gradient(ellipse at center, #121214 0%, #000 75%); cursor: default; }
+
+.panel { max-width: 620px; padding: 40px; text-align: center; }
+.panel.small { max-width: 420px; }
+
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: normal; font-size: 92px; letter-spacing: 28px;
+  margin: 0 0 6px 28px; color: #e6e0d2;
+  text-shadow: 0 0 30px rgba(255, 230, 200, 0.15);
+}
+h2 { font-family: Georgia, serif; font-weight: normal; letter-spacing: 8px; font-size: 34px; margin: 0 0 14px; }
+h2.red { color: #c33; }
+
+.tag { font-style: italic; color: #a39d90; margin: 0 0 26px; font-family: Georgia, serif; font-size: 18px; }
+.story { font-size: 14px; line-height: 1.7; color: #9d978b; margin-bottom: 24px; }
+.story b { color: #d7c99a; font-weight: normal; }
+
+.controls {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px;
+  text-align: left; font-size: 13px; color: #8e897e;
+  margin: 0 auto 26px; max-width: 460px;
+}
+kbd {
+  display: inline-block; min-width: 22px; padding: 2px 6px; margin-right: 6px;
+  border: 1px solid #444; border-radius: 3px; background: #151515;
+  color: #ddd; font: 11px monospace; text-align: center;
+}
+
+.mic-box {
+  border: 1px solid #2a2a2a; padding: 14px 16px; margin-bottom: 26px;
+  font-size: 12px; color: #8a857a;
+}
+#micStatus { margin-top: 8px; }
+
+button {
+  background: transparent; color: #e6e0d2;
+  border: 1px solid #6a655a; padding: 12px 34px;
+  font-size: 14px; letter-spacing: 5px; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+}
+button:hover:not(:disabled) { background: rgba(255, 240, 210, 0.08); border-color: #c8b98c; }
+button:disabled { opacity: 0.45; cursor: wait; }
+#micBtn { padding: 8px 18px; font-size: 11px; letter-spacing: 3px; }
+
+#win { background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55)); }
+#win h2 { color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.6); }
+#win p { color: #f2efe8; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+
+.difficulty { margin-bottom: 24px; }
+.difficulty .choices { display: flex; justify-content: center; gap: 8px; }
+.difficulty button { padding: 8px 16px; font-size: 11px; letter-spacing: 3px; border-color: #3a3832; color: #8a857a; }
+.difficulty button.on { border-color: #c8b98c; color: #e6e0d2; background: rgba(255, 240, 210, 0.06); }
+.difficulty button[data-d="hard"].on { border-color: #c33; color: #f0c8c0; }
+#difficultyDesc { margin-top: 10px; min-height: 34px; font-size: 12px; line-height: 1.5; color: #8a857a; }
+button.secondary { display: block; margin: 14px auto 0; padding: 6px 18px; font-size: 10px; letter-spacing: 3px; border-color: #3a3832; color: #8a857a; }
+
+.quality { margin-top: 18px; font-size: 11px; letter-spacing: 3px; color: #7d766a; }
+.quality button { padding: 4px 12px; margin-left: 6px; font-size: 10px; letter-spacing: 2px; border-color: #3a3832; color: #8a857a; }
+.quality button.on { border-color: #c8b98c; color: #e6e0d2; }
