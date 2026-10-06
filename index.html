@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HUSH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="hud" class="hidden">
+    <div id="crosshair"></div>
+    <div id="prompt"></div>
+    <div id="message"></div>
+    <div id="objective">FIND THE CLOCK THAT STILL WORKS<span class="sub">listen for the ticking</span></div>
+    <div id="inventory">
+      <div class="row" id="healthRow"><span class="label">HEALTH</span><span id="woundState" class="state w0">OK</span></div>
+      <div class="row" id="flareRow"><span class="label">FLARES</span><span id="flareCount" class="flares">▮▮▮</span><span id="flareStatus" class="status">READY [Q]</span></div>
+      <div class="row" id="kitRow"><span class="label">MED KITS</span><span id="kitCount">0</span><span class="status">[H] use</span></div>
+    </div>
+    <div id="stats">
+      <div class="row">
+        <span class="label">NOISE</span>
+        <div class="meter" id="noiseMeter"><div class="fill" id="noiseFill"></div></div>
+      </div>
+      <div class="row">
+        <span class="label">STAMINA</span>
+        <div class="meter"><div class="fill stamina" id="staminaFill"></div></div>
+      </div>
+      <div class="row hidden" id="micRow">
+        <span class="label">MIC</span>
+        <div class="meter"><div class="fill mic" id="micFill"></div></div>
+      </div>
+    </div>
+    <div id="debug"></div>
+  </div>
+  <div id="blood"></div>
+
+  <div id="menu" class="screen">
+    <div class="panel">
+      <h1>HUSH</h1>
+      <p class="tag">It cannot see well. It hears <em>everything</em>.</p>
+      <div class="story">
+        You wake up on the fourth floor of an apartment building that shouldn't exist.
+        The stairs only lead back here. Somewhere on this floor <b>one clock is still ticking</b>.
+        Find it and you can go home. Something else lives here. It hunts by <b>sound</b>.
+      </div>
+      <div class="difficulty">
+        <div class="choices">
+          <button type="button" data-d="peaceful">Peaceful</button>
+          <button type="button" data-d="easy">Easy</button>
+          <button type="button" data-d="medium">Medium</button>
+          <button type="button" data-d="hard">Hard</button>
+        </div>
+        <div id="difficultyDesc"></div>
+      </div>
+      <div class="controls">
+        <div><kbd>W A S D</kbd> move</div>
+        <div><kbd>Shift</kbd> sprint (loud)</div>
+        <div><kbd>C</kbd> crouch (quiet)</div>
+        <div><kbd>Space</kbd> jump (loud landing)</div>
+        <div><kbd>F</kbd> flashlight (it can see it)</div>
+        <div><kbd>E</kbd> check clock / take item</div>
+        <div><kbd>Q</kbd> light a flare (scares it off)</div>
+        <div><kbd>H</kbd> use a med kit</div>
+      </div>
+      <div class="mic-box">
+        <button id="micBtn" type="button">Enable microphone (optional)</button>
+        <div id="micStatus">Your <b>real voice</b> and room noise will attract it. Headphones recommended.</div>
+        <div class="meter wide hidden" id="menuMicMeter"><div class="fill mic" id="menuMicFill"></div></div>
+      </div>
+      <button id="startBtn" type="button" disabled>Loading…</button>
+      <div class="quality">Graphics:
+        <button type="button" data-q="high">High</button>
+        <button type="button" data-q="medium">Medium</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pause" class="screen hidden">
+    <div class="panel small">
+      <h2>PAUSED</h2>
+      <p>Click to resume</p>
+    </div>
+  </div>
+
+  <div id="dead" class="screen hidden">
+    <div class="panel small">
+      <h2 class="red">IT FOUND YOU</h2>
+      <p id="deadStats"></p>
+      <button id="retryBtn" type="button">Try again</button>
+      <button id="deadMenuBtn" type="button" class="secondary">Main menu</button>
+    </div>
+  </div>
+
+  <div id="win" class="screen hidden">
+    <div class="panel small">
+      <h2>YOU'RE HOME</h2>
+      <p id="winStats"></p>
+      <button id="againBtn" type="button">Play again</button>
+      <button id="winMenuBtn" type="button" class="secondary">Main menu</button>
+    </div>
+  </div>
+
+  <div id="flash"></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
